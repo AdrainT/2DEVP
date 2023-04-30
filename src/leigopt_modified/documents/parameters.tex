@@ -1,0 +1,109 @@
+\documentclass{article}
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\newcommand{\vect}{{\bf vec}}
+\newcommand {\C}        {{\mathbb{C}}}
+\newcommand {\R}        {{\mathbb{R}}}
+\newcommand {\N}        {{\mathbb{N}}}
+\newcommand {\Z}        {{\mathbb{Z}}}
+\newcommand {\Lb}        {{\mathbb{L}}}
+
+ \newtheorem{theorem}{Theorem}[section]
+ \newtheorem{lemma}[theorem]{Lemma}
+ \newtheorem{proposition}[theorem]{Proposition}
+ \newtheorem{corollary}[theorem]{Corollary}
+ \newtheorem{definition}[theorem]{Definition}
+
+ \newenvironment{example}[1][Example]{\begin{trivlist}
+ \item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+ \newenvironment{remark}[1][Remark]{\begin{trivlist}
+ \item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+
+\setlength{\textwidth}{5.6in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{0.5in}
+\setlength{\evensidemargin}{0.5in}
+
+\bibliographystyle{plain}
+
+\title{ Usage }
+
+\begin{document}
+\maketitle
+
+\large
+
+\noindent
+\texttt{[f,z] = routinename(funname,d,j,C,pars)}
+
+\vskip 2ex
+
+\noindent
+funname (string) : \\
+the name of the routine that computes
+the matrix-valued function $A(\omega)$ and its derivative
+at a given $\omega$.
+
+\vskip 1ex
+
+\noindent
+d (integer) : \\
+number of parameters, i.e., $\omega \in {\mathbb R}^d$
+
+\vskip 1ex
+
+\noindent
+j (integer) : \\
+minimize/maximize the $j$ largest/smallest eigenvalue/singular value. 
+
+\vskip 1ex
+
+\noindent
+C (cell array) : \\
+$C\{ k \} = A_k$ for $k = 1,\dots, \kappa$ where $A_k$ are matrices
+in the definition of $A(\omega)$.
+
+\vskip 1ex
+
+\noindent
+pars (structure) : \\
+parameters, pars.bounds.lb and pars.bounds.ub must contain
+the extreme corners of the box over which the optimization will be performed.
+For instance pars.bounds.lb = [-5 -5] and pars.bounds.ub = [5 5] means that
+perform optimization on $[-5,5]\times [-5,5]$.
+
+
+
+\vskip 10ex
+
+\noindent
+For instance to compute the numerical radius of $A$
+type \\
+\texttt{>> pars.bounds.lb = 0} \\
+\texttt{>> pars.bounds.ub = 2*pi} \\
+\texttt{>> C}$\{1\}$\texttt{ = A} \\
+\texttt{>> [f,z] = leigopt}$\_$\texttt{max('numrad',1,1,C,pars)}
+
+\vskip 5ex
+\noindent
+Here numrad is as follows.
+\begin{verbatim}
+function [M,Md] = numrad(z,C)
+
+M  = (C{1}*exp(i*z) + C{1}'*exp(-i*z))/2;
+Md = (i*C{1}*exp(i*z) - i*C{1}'*exp(-i*z))/2; 
+
+return;
+\end{verbatim}
+
+
+
+
+\end{document}

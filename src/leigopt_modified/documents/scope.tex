@@ -1,0 +1,62 @@
+\documentclass{article}
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\newcommand{\vect}{{\bf vec}}
+\newcommand {\C}        {{\mathbb{C}}}
+\newcommand {\R}        {{\mathbb{R}}}
+\newcommand {\N}        {{\mathbb{N}}}
+\newcommand {\Z}        {{\mathbb{Z}}}
+\newcommand {\Lb}        {{\mathbb{L}}}
+
+ \newtheorem{theorem}{Theorem}[section]
+ \newtheorem{lemma}[theorem]{Lemma}
+ \newtheorem{proposition}[theorem]{Proposition}
+ \newtheorem{corollary}[theorem]{Corollary}
+ \newtheorem{definition}[theorem]{Definition}
+
+ \newenvironment{example}[1][Example]{\begin{trivlist}
+ \item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+ \newenvironment{remark}[1][Remark]{\begin{trivlist}
+ \item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+
+\setlength{\textwidth}{5.6in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{0.5in}
+\setlength{\evensidemargin}{0.5in}
+
+\bibliographystyle{plain}
+
+\title{ Scope }
+
+\begin{document}
+\maketitle
+
+\large
+
+\noindent
+These Matlab routines are intended to optimize the eigenvalues and singular values
+of matrix-valued functions of the form
+\[
+	A(\omega) = f_1(\omega) A_1 + f_2(\omega) A_2 + \dots	+ f_\kappa(\omega) A_\kappa
+\]
+for given matrices $A_1,\dots, A_{\kappa}$ and functions $f_1,\dots, f_\kappa : {\mathbb R} \rightarrow {\mathbb R}$.
+For eigenvalue problems $A_1, \dots, A_\kappa, A(\omega)$ must be square and Hermitian.
+For singular value problems they do not have to be Hermitian and they can be rectangular.
+
+\vskip 5ex
+
+\noindent
+The routines are provided for the following problems. \\
+(1) Maximize the $J$th largest eigenvalue of $A(\omega)$ over $\omega$ (\texttt{leigopt}$\_$\texttt{max})\\
+(2) Minimize the $J$th largest eigenvalue of $A(\omega)$ over $\omega$ (\texttt{leigopt}$\_$\texttt{min})\\
+(3) Minimize the $J$th smallest singular value of $A(\omega)$ over $\omega$ (\texttt{lsvdminopt}$\_$\texttt{min}$\_$\texttt{general})
+
+
+\end{document}
