@@ -85,7 +85,6 @@ for jj=1:testtimes
     t_GRQI2 = t_GRQI2 + toc;
     nstep = nstep + step;
     niter_GRQI = niter_GRQI + niter;
-%    fprintf('%d: %.2e\n' ,jj,abs(muGRQI-mustar)+abs(lambdaGRQI-lamstar))
     fprintf('%d: %.2e, %.2e\n' ,jj,abs(muGRQI-mustar),abs(muGRQI-mustar)/abs(mustar))
 end
 

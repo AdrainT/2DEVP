@@ -1,6 +1,6 @@
 %% Add path
 addpath ../utils
-addpath ../src/2DEVP
+addpath ../src/2DRQI
 addpath ../src/leigopt_modified
 
 %% Clear and Format
@@ -8,7 +8,7 @@ clear; clc;
 format compact; format longe;
 
 %% Parameter setting for small size problems
-N         = 10;   % Dimension of the test matrices is n^2
+N         = 20;   % Dimension of the test matrices is n^2
 testtimes = 100;     % Number of test for timing per example/method
 
 %% Run small size problems
@@ -101,6 +101,7 @@ t_leigopt = 0;
 niter_GRQI = 0;
 niter_leigopt = 0;
 nstep = 0;
+checkPrecision = false;%true
 for jj=1:testtimes
     fprintf('%d-th test\n',jj);
     K = 2;
@@ -128,13 +129,14 @@ for jj=1:testtimes
     funBs = @(u) kron(P2_1*(P2_2'*reshape(u,N,N)).', P2_2);    
     
     % dichotomous
-    tic;
     mubd = [0,1];
     opt1.bd = mubd;
-    opt1.tol = 1e-4;
+    opt1.tol = 1e-9;
     opt1.n = N^2;
     opt1.maxit = 5e2;
-    
+    if checkPrecision
+        [mustar,lamstar,~,info] = dichotomous_largescale(funAs,funBs,opt1);
+    end
     funAs0 = @(u) kron(P1_1*reshape((P1_2'*reshape(u,N,N*size(u,2))),N,size(u,2)), P1_2);
     funBs0 = @(u) kron(P2_1*reshape((P2_2'*reshape(u,N,N*size(u,2))),N,size(u,2)), P2_2);
     funAB  = @(FLAG,x) funABs(funAs0,funBs0,x,0.2,FLAG,n);
@@ -145,7 +147,7 @@ for jj=1:testtimes
     opt2.normA = max(abs(P1_2))*norm(P1_2,1)*norm(P1_1,1);
     opt2.normC = max(abs(P2_2))*norm(P2_2,1)*norm(P2_1,1)+opt2.normA;
     opt2.n = N^2;
-    opt2.tol = opt2.normA*eps;
+    opt2.tol = opt2.n*eps;
     opteigs.isreal = false;
     opteigs.issym = 1;
     [x0,lambda0] = eigs(funAs,n,1,'sr',opteigs);
@@ -167,14 +169,19 @@ for jj=1:testtimes
     t_GRQI2 = t_GRQI2 + toc;
     nstep = nstep + step;
     niter_GRQI = niter_GRQI + niter;
+    if checkPrecision
+        fprintf('Relative error of muGRQI is %.4g\n', abs(mustar-muGRQI)/abs(mustar));
+    end
     
     % leigopt
-    opt2.tol = 1e-8;
+    opt2.tol = 1e-10;
     tic
     [ muleigopt,lambdaleigopt,flag,step,info_leigopt,niter ] = minimaxRay_leigopt( funAs, funBs, n,opt2 );
     t_leigopt = t_leigopt + toc;
-    nstep = nstep + step;
     niter_leigopt = niter_leigopt + niter;
+    if checkPrecision
+        fprintf('Relative error of muGRQI is %.4g\n', abs(mustar-muleigopt)/abs(mustar));
+    end
 end
 
 fprintf('Average timing for checking in GRQI is %.3fs, Average timing for GRQI without checking %.4fs\n',t_GRQI1/testtimes, t_GRQI2/testtimes);

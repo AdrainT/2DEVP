@@ -1,6 +1,6 @@
 %% Add path
 addpath ../utils
-addpath ../src/2DEVP
+addpath ../src/2DRQI
 addpath ../src/leigopt_modified
 
 
@@ -10,7 +10,7 @@ format compact; format longe;
 
 DataDir  = '../Data/';
 %% Parameter setting for small size problems
-testtimes = 10;     % Number of test for timing per example/method
+testtimes = 100;     % Number of test for timing per example/method
 MatricesDir = [DataDir,'testmatrices_small/'];
 
 %% Example 4 -- Part I: Small matrices

@@ -50,19 +50,15 @@ opts.maxit = 30000;
 %opts.p = round(sqrt(n));
 opts.isreal = false;
 tSub  = 0;
-teigs = 0;
 V = [];
 [~,ninit] = size(z);
 for k = 1:ninit
     funM = @(x) (1-z)*funA(x) + z*funB(x);
-%    tic;
     [Vt,D] = eigs(funM,n,1,'SR',opts); 		   
-%    teigs = teigs + toc;
 	V = [V Vt];
 end
 
 [P,~] = qr(V,0);
-
 
 %opts.v0 = V(:,end);
 
@@ -74,13 +70,8 @@ fU = inf;
 fL = -inf;
 z = z(:,1);
 
-
-while (iter <= maxit) && (fU-fL>=tol) %((f - oldf) > tol)
-
+while (iter <= maxit) && (fU-fL>=tol) %((f - oldf) > tol)  More strict stopping criterion to solve the early termination problem.    
 	clear parsin;
-
-
-
 	%%%%%%%%%%%
 	% FORM THE REDUCED PROBLEM
 	%%%%%%%%%%%
@@ -92,11 +83,6 @@ while (iter <= maxit) && (fU-fL>=tol) %((f - oldf) > tol)
     for ii=1:size(P,2)
         parsin.A{2}(:,ii) =P'*funB(P(:,ii));
     end
-    
-    %%%%%%%%%%%
-	%%%%%%%%%%%
-
-
 
 	%%%%%%%%%%%
 	% SOLVE THE REDUCED PROBLEM
@@ -110,56 +96,36 @@ while (iter <= maxit) && (fU-fL>=tol) %((f - oldf) > tol)
 
 	oldz = z;
 	oldf = f;
-    parsin.minmax = 1;
-%    tic;
 	[f,z,parsout] = eigopt('funMIMO',bounds,parsin);
-%    tSub = tSub + toc;
     fU = min([fU,f]);		   
 	if (iter == 1)
 		oldf = f - 1;
 	end
 	%%%%%%%%%%%%
-	%%%%%%%%%%%%
-	if isprint
-		fprintf('** iter: %d, f: %.14f z: %.14f ** \n', iter, f, z);
+    %%%%%%%%%%%%
+    if isprint
+        fprintf('** iter: %d, f: %.14f z: %.14f ** \n', iter, f, z);
     end
 	if (iter == 1) || abs(f - oldf) > tol
         funM = @(x) (1-z)*funA(x) + z*funB(x);
         				   
-%		if abs(f - oldf) > 10^(-2)
-%        tic;
 		[V,D] = eigs(funM,n,1,'SR',opts);
-%        teigs = teigs + toc;
-%		else
-%			[V,D] = eigs(funM,n,1,f+5*abs(f - oldf),opts);
-%		end
 		fL = max([fL,D]);
 						   
-%		if sp
-			opts.v0 = V(:,end);
-%		end
+        opts.v0 = V(:,end);
 
     	[P,~] = qr([V P],0);
-	end
-
-
-
+    end
 	if (iter > 2) && (abs(f - oldf) < 10^-2)
 		opts.tol = max(abs(f - oldf)^2,0.1*tol);
 	end
 
-
 	iter = iter+1;
-
 end
 
-
-
-%if oldf > f
-%	f = oldf;
-%	z = oldz;
-%end
-
-
+if oldf < f
+	f = oldf;
+	z = oldz;
+end
 
 return
