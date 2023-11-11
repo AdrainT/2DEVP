@@ -191,14 +191,12 @@ for i=1:nList
         shiftUsed = DTIInfo{jj,2};  
         n = size(A,1);
         A = A - shiftUsed*speye(n);
-              
         tRQIUsed1    = 0;      tRQIUsed2    = 0;   nRQIIter = 0;
         tLeigoptUsed = 0;      nLeigoptIter = 0;
-        
         fprintf('Calculating the rightmost evl');
         tic;
         for j=1:testtimes
-            if strcmp('tols4000.mat',MatrixNames{count})
+            if strcmp('tols4000.mat',MatrixNames{count}) || strcmp('olmstead1000.mat',MatrixNames{count})
                 [V,D] = clay_Arnoldi(A, 1);
             else
                 D = eigs(A, 1, 'lr');
@@ -206,7 +204,6 @@ for i=1:nList
             opt.mu0 = imag(D);
         end
         trightmost = toc;
-        
         % RQI        
         fprintf('Testing RQI\n');
         opt.tol   = n*eps;

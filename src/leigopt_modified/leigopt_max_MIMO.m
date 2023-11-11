@@ -11,6 +11,11 @@ else
 	bounds.ub = 60*ones(d,1);
 end
 
+if isfield(pars, 'useCvx')
+    useCvx = pars.useCvx;
+else
+    useCvx = false;
+end
 
 if isfield(pars,'maxit')
 	maxit = pars.maxit;
@@ -96,7 +101,22 @@ while (iter <= maxit) && (fU-fL>=tol) %((f - oldf) > tol)  More strict stopping 
 
 	oldz = z;
 	oldf = f;
-	[f,z,parsout] = eigopt('funMIMO',bounds,parsin);
+    ticBeg = tic;
+    if useCvx
+        nSubMat  = size(P,2);
+        Imat     = eye(nSubMat);
+        cvx_begin sdp quiet
+        variables f(1) z(1);
+        maximize ( f );
+        subject to
+        0 <= z <= 1;
+        (1-z)*parsin.A{1} + z * parsin.A{2}-f*Imat == hermitian_semidefinite(nSubMat);
+        cvx_end
+    else
+    	[f,z,parsout] = eigopt('funMIMO',bounds,parsin);    
+    end
+    tSub = tSub + toc(ticBeg);
+
     fU = min([fU,f]);		   
 	if (iter == 1)
 		oldf = f - 1;
