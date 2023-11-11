@@ -6,7 +6,7 @@ function [ V,D,res ] = clay_Arnoldi( A,k,opts )
 if nargin <= 2
     maxit = 100;
     tol = 1e-6;
-    m = 2*k+4;
+    m = 2*k+6;
 else
     if isfield(opts,'maxit')
         maxit = opts.maxit;
@@ -21,7 +21,7 @@ else
     if isfield(opts,'m')
         m = opts.m;
     else
-        m = 2*k+4;
+        m = 2*k+6;
     end
 end
 n = size(A,2);
