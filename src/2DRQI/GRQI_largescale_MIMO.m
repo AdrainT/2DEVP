@@ -89,8 +89,11 @@ for it=1:maxit
     funLv = @(u) [(1-mu)*funAs(u(1:n))+mu*funBs(u(1:n))-lambda*u(1:n)-Cx*u(n+1)-(normA*u(n+2))*x;
     -Cx'*u(1:n);
     -x'*u(1:n)];
-    [X11,~] = gmres(funLv,rhs1,30,tolLS,10);
-    [X12,~] = gmres(funLv,rhs2,30,tolLS,10);
+%    [X11,~] = gmres(funLv,rhs1,30,tolLS,10);
+%    [X12,~] = gmres(funLv,rhs2,30,tolLS,10);
+    [X11,~] = gmres(funLv,rhs1,30,tolLS);
+    [X12,~] = gmres(funLv,rhs2,30,tolLS);
+
     Q = orth([X11(1:n),X12(1:n)]);
     
     
