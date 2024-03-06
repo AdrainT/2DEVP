@@ -2,6 +2,7 @@
 addpath ../utils
 addpath ../src/2DRQI
 addpath ../src/dichotomous
+addpath ../src/leigopt_modified
 
 %% Clear and Format
 clear; clc;
@@ -16,6 +17,7 @@ t_Ga   = 0;
 t_GRQI1 = 0;
 t_GRQI2 = 0;
 t_leigopt = 0;
+t_leigopt_sub = 0;
 
 niter_Ga = 0;
 niter_GRQI = 0;
@@ -92,8 +94,9 @@ for jj=1:testtimes
     % leigopt
     opt2.tol = 1e-10;
     tic
-    [ muleigopt,lambdaleigopt,flag,step,info_leigopt,niter ] = minimaxRay_leigopt( funAs, funBs, n,opt2 );
+    [ muleigopt,lambdaleigopt,flag,step,info_leigopt,niter, t_Sub ] = minimaxRay_leigopt( funAs, funBs, n,opt2 );
     t_leigopt = t_leigopt + toc;
+    t_leigopt_sub = t_leigopt_sub + t_Sub;
     niter_leigopt = niter_leigopt + niter;
     fprintf('%d: %.2e, %.2e\n' ,jj,abs(muleigopt-mustar),abs(muleigopt-mustar)/abs(mustar))
 end
@@ -103,5 +106,6 @@ fprintf('Average iterative steps for dichotomous£º %.3f\n',niter_Ga/testtimes);
 fprintf('Average timing for checking in GRQI is %.3fs, Average timing for GRQI without checking %.4fs\n',t_GRQI1/testtimes, t_GRQI2/testtimes);
 fprintf('Average iterative steps for GRQI: %d\n',niter_GRQI/testtimes);
 fprintf('Average timing for leigopt is %.4fs\n',t_leigopt/testtimes);
+fprintf('Average timing for leigopt solving subproblems is %.4fs\n',t_leigopt_sub/testtimes);
 fprintf('Average iterative steps for leigopt: %d\n',niter_leigopt/testtimes);
 
